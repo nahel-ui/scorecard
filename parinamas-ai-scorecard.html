@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enterprise AI Readiness Scorecard | Parinamas</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #2a2922;
+    --navy-mid: rgba(255,255,255,0.06);
+    --navy-light: rgba(255,255,255,0.09);
+    --gold: #E8A020;
+    --gold-light: #f5c060;
+    --gold-dim: rgba(232,160,32,0.15);
+    --white: #ffffff;
+    --off-white: #f7f4ef;
+    --text-muted: rgba(255,255,255,0.55);
+    --system-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    --heading-font: 'Barlow Condensed', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    font-family: var(--system-font);
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100%;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  /* background texture removed for transparent embed */
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* TOP PADDING */
+  .container { padding-top: 0; }
+
+  /* SCREENS */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* INTRO SCREEN */
+  .intro-badge {
+    display: inline-block;
+    background: var(--gold-dim);
+    border: 1px solid rgba(232,160,32,0.3);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+  }
+
+  .intro-title {
+    font-family: var(--heading-font);
+    font-size: clamp(34px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  .intro-title span { color: var(--gold); }
+
+  .intro-subtitle {
+    font-size: 17px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+    max-width: 560px;
+    margin: 0 auto 40px;
+  }
+
+  .intro-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 48px;
+    padding: 28px 0;
+    border-top: 1px solid rgba(232,160,32,0.2);
+    border-bottom: 1px solid rgba(232,160,32,0.2);
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: var(--heading-font);
+    font-size: 32px;
+    color: var(--gold);
+    font-weight: 700;
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--navy);
+    font-family: var(--system-font);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 16px 48px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  .intro-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* QUIZ SCREEN */
+  .progress-bar-wrap {
+    padding: 40px 0 32px;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .progress-count {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .progress-track {
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .dimension-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--gold-dim);
+    border: 1px solid rgba(232,160,32,0.25);
+    padding: 4px 12px;
+    margin-bottom: 20px;
+    border-radius: 2px;
+  }
+
+  .question-text {
+    font-family: var(--heading-font);
+    font-size: clamp(20px, 3.5vw, 28px);
+    font-weight: 600;
+    line-height: 1.35;
+    margin-bottom: 36px;
+    letter-spacing: -0.01em;
+  }
+
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .option-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    color: var(--white);
+    font-family: var(--system-font);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .option-btn:hover {
+    background: rgba(232,160,32,0.08);
+    border-color: rgba(232,160,32,0.4);
+    transform: translateX(4px);
+  }
+
+  .option-btn.selected {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .option-letter {
+    width: 28px; height: 28px;
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .option-btn.selected .option-letter {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 48px;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--text-muted);
+    padding: 12px 28px;
+    cursor: pointer;
+    font-family: var(--system-font);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.4); color: var(--white); }
+  .btn-ghost:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .btn-next {
+    background: var(--navy-mid);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 13px 36px;
+    cursor: pointer;
+    font-family: var(--system-font);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .btn-next:hover:not(:disabled) {
+    background: var(--gold);
+    color: var(--navy);
+  }
+
+  .btn-next:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* LEAD CAPTURE */
+  .lead-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(232,160,32,0.25);
+    padding: 48px;
+    margin: 40px 0;
+  }
+
+  .lead-title {
+    font-family: var(--heading-font);
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .lead-subtitle {
+    font-size: 15px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .field-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .field-input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--white);
+    font-family: var(--system-font);
+    font-size: 15px;
+    font-weight: 400;
+    padding: 14px 18px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .field-input:focus { border-color: var(--gold); }
+  .field-input::placeholder { color: rgba(255,255,255,0.25); }
+
+  /* RESULTS SCREEN */
+  .results-header {
+    padding: 48px 0 0;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .score-ring-wrap {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 32px;
+  }
+
+  .score-ring-svg { transform: rotate(-90deg); }
+
+  .score-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-number {
+    font-family: var(--heading-font);
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .score-denom {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .tier-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 24px;
+    margin-bottom: 20px;
+  }
+
+  .results-title {
+    font-family: var(--heading-font);
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .results-subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.65);
+    max-width: 520px;
+    margin: 0 auto 48px;
+    line-height: 1.7;
+  }
+
+  /* Dimension breakdown */
+  .breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .dim-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .dim-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .dim-score {
+    font-family: var(--heading-font);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .dim-max { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+
+  .dim-bar-track {
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .dim-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 2px;
+  }
+
+  /* AI Insights */
+  .insights-card {
+    background: var(--navy-mid);
+    border: 1px solid rgba(232,160,32,0.25);
+    border-left: 4px solid var(--gold);
+    padding: 36px 40px;
+    margin-bottom: 32px;
+  }
+
+  .insights-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .insights-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(232,160,32,0.2);
+  }
+
+  .insights-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.85);
+    white-space: pre-line;
+  }
+
+  .loading-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes pulse {
+    0%,80%,100% { opacity: 0.3; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1); }
+  }
+
+  /* CTA section */
+  .cta-section {
+    text-align: center;
+    padding: 40px 0 64px;
+    border-top: 1px solid rgba(232,160,32,0.15);
+  }
+
+  .cta-pre {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .cta-title {
+    font-family: var(--heading-font);
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .cta-text {
+    font-size: 15px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+  .btn-cta-primary {
+    background: var(--gold);
+    color: var(--navy);
+    font-family: var(--system-font);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-cta-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  .btn-cta-secondary {
+    background: transparent;
+    color: var(--white);
+    font-family: var(--system-font);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-cta-secondary:hover { border-color: rgba(255,255,255,0.5); }
+
+  /* Divider */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 32px 0;
+    opacity: 0.3;
+  }
+  .section-divider::before, .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gold);
+  }
+  .section-divider span {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  .footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding-bottom: 40px;
+  }
+
+  @media (max-width: 600px) {
+    .intro-stats { gap: 24px; }
+    .field-row { grid-template-columns: 1fr; }
+    .breakdown-grid { grid-template-columns: 1fr; }
+    .lead-card { padding: 32px 24px; }
+    .insights-card { padding: 28px 24px; }
+  }
+
+  /* RANKING QUESTION */
+  .rank-instruction {
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .rank-instruction::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(232,160,32,0.2);
+  }
+
+  .rank-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .rank-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 24px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rank-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .rank-card:hover {
+    background: rgba(232,160,32,0.06);
+    border-color: rgba(232,160,32,0.3);
+    transform: translateX(4px);
+  }
+
+  .rank-card.ranked {
+    background: var(--gold-dim);
+    border-color: rgba(232,160,32,0.5);
+  }
+
+  .rank-card.ranked::before { opacity: 1; }
+
+  .rank-badge {
+    width: 40px; height: 40px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--heading-font);
+    font-size: 18px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.25);
+    flex-shrink: 0;
+    transition: all 0.25s;
+  }
+
+  .rank-card.ranked .rank-badge {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+  }
+
+  .rank-card-body { flex: 1; }
+
+  .rank-card-title {
+    font-family: var(--heading-font);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    transition: color 0.25s;
+  }
+
+  .rank-card.ranked .rank-card-title { color: var(--gold-light); }
+
+  .rank-card-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.5;
+  }
+
+  .rank-card.ranked .rank-card-desc { color: rgba(232,160,32,0.6); }
+
+  .rank-pill {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 4px 10px;
+    transition: all 0.25s;
+    white-space: nowrap;
+  }
+
+  .rank-card.ranked .rank-pill {
+    color: var(--gold);
+    border-color: rgba(232,160,32,0.4);
+  }
+
+  /* Fade animation */
+  .fade-in { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+
+  <!-- INTRO -->
+  <div class="screen active fade-in" id="screen-intro">
+    <div style="text-align:center; padding-bottom: 64px; padding-top: 0;">
+      <div class="intro-badge">Executive Assessment · 6 Minutes</div>
+      <h1 class="intro-title">Is Your Enterprise<br>Ready for <span>AI Transformation?</span></h1>
+      <p class="intro-subtitle">12 questions across People, Process, and Technology. Get an instant readiness score and a personalized strategic roadmap — built for mid-market executives.</p>
+
+      <div class="intro-stats">
+        <div class="stat">
+          <span class="stat-num">547%</span>
+          <span class="stat-label">ROI Delivered</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">12</span>
+          <span class="stat-label">Questions</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">3</span>
+          <span class="stat-label">Dimensions Scored</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="startQuiz()">Begin Assessment</button>
+      <div class="intro-note">Free · No commitment · Instant results</div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-bar-wrap">
+      <div class="progress-meta">
+        <span class="progress-label">AI Readiness Assessment</span>
+        <span class="progress-count" id="progress-count">1 of 10</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:10%"></div>
+      </div>
+    </div>
+
+    <div id="question-area" class="fade-in"></div>
+  </div>
+
+  <!-- LEAD CAPTURE -->
+  <div class="screen" id="screen-lead">
+    <div class="lead-card fade-in">
+      <h2 class="lead-title">Your Results Are Ready</h2>
+      <p class="lead-subtitle">Enter your details to receive your full AI Readiness Score, dimension breakdown, and a personalized strategic roadmap generated just for your organization.</p>
+
+      <div class="field-group">
+        <div class="field-row">
+          <div>
+            <label class="field-label">First Name</label>
+            <input class="field-input" id="field-name" type="text" placeholder="Your name">
+          </div>
+          <div>
+            <label class="field-label">Last Name</label>
+            <input class="field-input" id="field-lastname" type="text" placeholder="Last name">
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Work Email</label>
+          <input class="field-input" id="field-email" type="email" placeholder="you@company.com">
+        </div>
+        <div class="field-row">
+          <div>
+            <label class="field-label">Company</label>
+            <input class="field-input" id="field-company" type="text" placeholder="Company name">
+          </div>
+          <div>
+            <label class="field-label">Your Title</label>
+            <input class="field-input" id="field-title" type="text" placeholder="e.g. VP of Operations">
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Industry</label>
+          <select class="field-input" id="field-industry" style="cursor:pointer;">
+            <option value="" disabled selected>Select your industry</option>
+            <option>Manufacturing</option>
+            <option>Financial Services</option>
+            <option>Retail & Consumer</option>
+            <option>Food & Beverage</option>
+            <option>Logistics & Supply Chain</option>
+            <option>Durables</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="showResults()" style="width:100%;">View My AI Readiness Score →</button>
+      <p style="font-size:12px; color: var(--text-muted); margin-top:14px;">Your information is private and never shared. Parinamas may reach out with your permission.</p>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="screen" id="screen-results">
+    <div class="results-header fade-in">
+      <div class="score-ring-wrap">
+        <svg class="score-ring-svg" width="180" height="180" viewBox="0 0 180 180">
+          <circle cx="90" cy="90" r="76" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+          <circle cx="90" cy="90" r="76" fill="none" stroke="url(#goldGrad)" stroke-width="10"
+            stroke-linecap="round"
+            stroke-dasharray="477.5"
+            stroke-dashoffset="477.5"
+            id="score-arc"/>
+          <defs>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#E8A020"/>
+              <stop offset="100%" style="stop-color:#f5c060"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="score-text">
+          <span class="score-number" id="score-display">0</span>
+          <span class="score-denom">out of 100</span>
+        </div>
+      </div>
+
+      <div class="tier-badge" id="tier-badge">Calculating...</div>
+      <h2 class="results-title" id="results-title">Your AI Readiness Assessment</h2>
+      <p class="results-subtitle" id="results-subtitle">Loading your personalized analysis...</p>
+    </div>
+
+    <div class="breakdown-grid" id="breakdown-grid"></div>
+
+    <div class="insights-card">
+      <div class="insights-label">Personalized Strategic Insights</div>
+      <div id="insights-content">
+        <div class="loading-dots">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span></span></div>
+
+    <div class="cta-section">
+      <div class="cta-pre">Your Next Step</div>
+      <h3 class="cta-title">Book Your AI Strategy Session</h3>
+      <p class="cta-text">In a focused 30-minute conversation, we'll map your highest-impact AI opportunities and identify the fastest path to measurable ROI — at no cost or obligation.</p>
+      <div class="cta-buttons">
+        <a href="https://parinamas.com" class="btn-cta-primary" target="_blank">Schedule a Call →</a>
+        <a href="https://parinamas.com" class="btn-cta-secondary" target="_blank">Learn About Parinamas</a>
+      </div>
+    </div>
+
+    <div class="footer-note" style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <svg width="160" height="40" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(20,20)">
+          <rect x="-12" y="-12" width="24" height="24" rx="1" transform="rotate(45)" fill="#E8A020" opacity="0.12"/>
+          <rect x="-8" y="-8" width="16" height="16" rx="1" transform="rotate(45)" fill="#E8A020" opacity="0.35"/>
+          <rect x="-5" y="-5" width="10" height="10" rx="0.5" transform="rotate(45)" fill="#E8A020"/>
+        </g>
+        <line x1="40" y1="8" x2="40" y2="32" stroke="#E8A020" stroke-width="0.5" opacity="0.3"/>
+        <text x="48" y="17" font-family="'Barlow Condensed', sans-serif" font-size="13" font-weight="700" letter-spacing="2" fill="rgba(255,255,255,0.6)">PARINAMAS</text>
+        <text x="49" y="28" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="6" font-weight="400" letter-spacing="2.5" fill="#E8A020" opacity="0.6">AI TRANSFORMATION</text>
+      </svg>
+      <span>© 2026 Parinamas · Chicago, IL</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    dimension: "People",
+    text: "How would you describe your organization's current AI literacy across leadership and frontline teams?",
+    options: [
+      "AI is largely unfamiliar — most leaders can't define key terms",
+      "Basic awareness exists but no formal training or champions",
+      "We have pockets of expertise but no enterprise-wide capability",
+      "AI fluency is embedded across functions with active champions"
+    ]
+  },
+  {
+    dimension: "People",
+    text: "Do you have a dedicated AI/digital transformation leader (CDO, Chief AI Officer, or equivalent) with organizational authority?",
+    options: [
+      "No — AI is managed ad-hoc by IT or operations",
+      "We have someone, but it's a part-time or informal role",
+      "Yes, but they lack cross-functional authority or budget",
+      "Yes — a senior leader with clear mandate, team, and budget"
+    ]
+  },
+  {
+    dimension: "People",
+    text: "How does your organization handle change management when deploying new technology?",
+    options: [
+      "We deploy technology and expect adoption to happen organically",
+      "We provide basic training but don't measure adoption outcomes",
+      "We have structured change programs but they're inconsistently applied",
+      "We run formal change management tied to measurable adoption KPIs"
+    ]
+  },
+  {
+    dimension: "Process",
+    text: "How mature are your data governance and data quality processes today?",
+    options: [
+      "Data is siloed — no unified governance or ownership",
+      "Some data standards exist but are inconsistently enforced",
+      "Governance policies are defined; quality is monitored but not optimized",
+      "Enterprise-wide governance with clean, accessible, well-documented data"
+    ]
+  },
+  {
+    dimension: "Process",
+    text: "When evaluating AI use cases, does your organization have a formal process for prioritizing and measuring ROI?",
+    options: [
+      "No formal process — decisions are largely intuitive or ad-hoc",
+      "We evaluate use cases informally against business goals",
+      "We have a prioritization framework but ROI tracking is inconsistent",
+      "Rigorous use case scoring with defined ROI models and post-deployment measurement"
+    ]
+  },
+  {
+    dimension: "Process",
+    text: "How integrated is AI into your core business processes today (supply chain, customer service, finance, etc.)?",
+    options: [
+      "Not at all — AI is in pilot or proof-of-concept only",
+      "1–2 isolated tools in use but not embedded in workflows",
+      "AI is active in several processes with measurable output",
+      "AI is deeply embedded across multiple business functions at scale"
+    ]
+  },
+  {
+    dimension: "Process",
+    text: "Does your organization have a documented AI ethics, risk, and compliance framework?",
+    options: [
+      "No framework exists — we operate on a case-by-case basis",
+      "We follow general IT governance but AI-specific policies are absent",
+      "An ethics framework exists but isn't actively enforced",
+      "Comprehensive AI governance with ongoing audits and accountability"
+    ]
+  },
+  {
+    dimension: "Technology",
+    text: "How would you describe your current cloud and data infrastructure readiness for AI workloads?",
+    options: [
+      "Predominantly on-premise with limited cloud adoption",
+      "Hybrid with some cloud but no AI-optimized architecture",
+      "Cloud-first with scalable infrastructure but AI tooling is nascent",
+      "AI-ready infrastructure with MLOps, data pipelines, and compute at scale"
+    ]
+  },
+  {
+    dimension: "Technology",
+    text: "Has your organization deployed any AI agents, automation pipelines, or large language models in production?",
+    options: [
+      "No — we haven't deployed any AI beyond basic automation tools",
+      "We've run pilots but nothing in production at scale",
+      "1–2 AI systems are in production with measurable business impact",
+      "Multiple AI agents and models are running in production across functions"
+    ]
+  },
+  {
+    dimension: "Technology",
+    text: "How does your organization approach AI vendor and partner evaluation?",
+    options: [
+      "We evaluate vendors reactively as needs arise, no formal criteria",
+      "We have procurement criteria but AI-specific due diligence is limited",
+      "We assess vendors on security, scalability, and integration fit",
+      "Strategic partner ecosystem with rigorous AI-specific evaluation and ongoing governance"
+    ]
+  },
+  {
+    dimension: "Technology",
+    text: "How does your organization currently measure and report the business impact of AI initiatives to senior leadership?",
+    options: [
+      "We don't have a formal reporting process — AI outcomes are anecdotal",
+      "We report on activity metrics (projects launched, tools deployed) but not business outcomes",
+      "We track some business KPIs tied to AI but reporting is inconsistent",
+      "We have a formal AI value dashboard with ROI metrics reported to the board regularly"
+    ]
+  },
+  {
+    dimension: "Technology",
+    text: "How would you describe your organization's current budget allocation and executive commitment toward AI initiatives?",
+    options: [
+      "No dedicated AI budget — initiatives are funded opportunistically or from IT reserves",
+      "Limited budget exists but lacks executive sponsorship or multi-year commitment",
+      "Defined AI budget with executive support, though tied to short-term project outcomes",
+      "Strategic, multi-year AI investment with C-suite sponsorship and measurable performance targets"
+    ]
+  },
+  {
+    dimension: "Strategy",
+    type: "rank",
+    text: "Where do you see the biggest gap holding your organization back from AI transformation?",
+    items: [
+      {
+        key: "People",
+        title: "People",
+        desc: "Skills, leadership alignment, culture, and change readiness"
+      },
+      {
+        key: "Process",
+        title: "Process",
+        desc: "Data governance, use case prioritization, and AI integration into workflows"
+      },
+      {
+        key: "Technology",
+        title: "Technology",
+        desc: "Infrastructure, tooling, AI deployment, and vendor ecosystem"
+      }
+    ]
+  }
+];
+
+let currentQ = 0;
+let answers = [];
+let userData = {};
+
+function startQuiz() {
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  setTimeout(postHeight, 100);
+  setTimeout(postHeight, 500);
+}
+
+function postHeight() {
+  const h = document.body.scrollHeight;
+  window.parent.postMessage({ type: 'scorecardHeight', height: h }, '*');
+}
+
+let rankOrder = []; // tracks ranking for the rank question
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  const pct = ((currentQ + 1) / QUESTIONS.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-count').textContent = `${currentQ + 1} of ${QUESTIONS.length}`;
+
+  if (q.type === 'rank') {
+    renderRankQuestion(q);
+    return;
+  }
+
+  const letters = ['A','B','C','D'];
+  const savedAnswer = answers[currentQ] !== undefined ? answers[currentQ] : -1;
+
+  const html = `
+    <div class="fade-in">
+      <div class="dimension-tag">${q.dimension}</div>
+      <div class="question-text">${q.text}</div>
+      <div class="options-grid">
+        ${q.options.map((opt, i) => `
+          <button class="option-btn ${savedAnswer === i ? 'selected' : ''}" onclick="selectAnswer(${i})">
+            <span class="option-letter">${letters[i]}</span>
+            <span>${opt}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="nav-row">
+        <button class="btn-ghost" onclick="prevQuestion()" ${currentQ === 0 ? 'disabled' : ''}>← Back</button>
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()" ${savedAnswer === -1 ? 'disabled' : ''}>
+          ${currentQ === QUESTIONS.length - 1 ? 'See My Score →' : 'Next →'}
+        </button>
+      </div>
+    </div>
+  `;
+  document.getElementById('question-area').innerHTML = html;
+}
+
+function renderRankQuestion(q) {
+  // Only restore from saved answers when navigating back to this question
+  // (do NOT reset if rankOrder already has items — means we're mid-ranking)
+  if (Array.isArray(answers[currentQ])) {
+    rankOrder = [...answers[currentQ]];
+  }
+
+  const ordinalLabels = ['1st', '2nd', '3rd'];
+  const isComplete = rankOrder.length === q.items.length;
+
+  const cardsHtml = q.items.map(item => {
+    const rankIdx = rankOrder.indexOf(item.key);
+    const isRanked = rankIdx !== -1;
+    const ordinal = isRanked ? ordinalLabels[rankIdx] : '';
+    return `
+      <div class="rank-card ${isRanked ? 'ranked' : ''}" onclick="rankItem('${item.key}')">
+        <div class="rank-badge">${isRanked ? (rankIdx + 1) : '·'}</div>
+        <div class="rank-card-body">
+          <div class="rank-card-title">${item.title}</div>
+          <div class="rank-card-desc">${item.desc}</div>
+        </div>
+        <div class="rank-pill">${isRanked ? ordinal + ' Priority' : 'Tap to Rank'}</div>
+      </div>
+    `;
+  }).join('');
+
+  const html = `
+    <div class="fade-in">
+      <div class="dimension-tag">Strategic Prioritization</div>
+      <div class="question-text">${q.text}</div>
+      <div class="rank-instruction">Tap in order of priority — 1st to 3rd</div>
+      <div class="rank-cards" id="rank-cards-container">
+        ${cardsHtml}
+      </div>
+      <div class="nav-row">
+        <button class="btn-ghost" onclick="prevQuestion()">← Back</button>
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()" ${!isComplete ? 'disabled' : ''}>
+          See My Score →
+        </button>
+      </div>
+    </div>
+  `;
+  document.getElementById('question-area').innerHTML = html;
+}
+
+function rankItem(key) {
+  const q = QUESTIONS[currentQ];
+  const idx = rankOrder.indexOf(key);
+  if (idx !== -1) {
+    // Already ranked — remove it and all after it to allow re-ranking
+    rankOrder = rankOrder.slice(0, idx);
+  } else {
+    rankOrder.push(key);
+  }
+  answers[currentQ] = rankOrder.length === q.items.length ? [...rankOrder] : undefined;
+  renderRankQuestion(q);
+}
+
+function selectAnswer(idx) {
+  answers[currentQ] = idx;
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.classList.toggle('selected', i === idx);
+  });
+  document.getElementById('btn-next').disabled = false;
+}
+
+function nextQuestion() {
+  if (answers[currentQ] === undefined) return;
+  if (currentQ < QUESTIONS.length - 1) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    showScreen('screen-lead');
+  }
+}
+
+function prevQuestion() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+}
+
+function showResults() {
+  const name = document.getElementById('field-name').value || 'Executive';
+  const company = document.getElementById('field-company').value || 'your organization';
+  const industry = document.getElementById('field-industry').value || 'your industry';
+  const title = document.getElementById('field-title').value || '';
+
+  userData = { name, company, industry, title };
+
+  // Compute scores — skip the rank question (type: 'rank')
+  const dims = { People: [], Process: [], Technology: [] };
+  QUESTIONS.forEach((q, i) => {
+    if (q.type === 'rank') return;
+    const score = (answers[i] || 0) * 33.33;
+    dims[q.dimension].push(score);
+  });
+
+  // Extract ranking answer
+  const rankQ = QUESTIONS.findIndex(q => q.type === 'rank');
+  const selfRanking = Array.isArray(answers[rankQ]) ? answers[rankQ] : [];
+
+  const avg = arr => arr.reduce((a,b) => a+b, 0) / arr.length;
+  const peopleScore = Math.round(avg(dims.People));
+  const processScore = Math.round(avg(dims.Process));
+  const techScore = Math.round(avg(dims.Technology));
+  const totalScore = Math.round((peopleScore + processScore + techScore) / 3);
+
+  showScreen('screen-results');
+
+  // Animate score ring
+  const circumference = 477.5;
+  const offset = circumference - (totalScore / 100) * circumference;
+  setTimeout(() => {
+    document.getElementById('score-arc').style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1)';
+    document.getElementById('score-arc').style.strokeDashoffset = offset;
+    animateNumber('score-display', 0, totalScore, 1500);
+  }, 200);
+
+  const tier = getTier(totalScore);
+  document.getElementById('tier-badge').textContent = tier.label;
+  document.getElementById('results-title').textContent = tier.headline;
+  document.getElementById('results-subtitle').textContent = tier.subtext.replace('{name}', name).replace('{company}', company);
+
+  // Breakdown
+  document.getElementById('breakdown-grid').innerHTML = [
+    { label: 'People', score: peopleScore },
+    { label: 'Process', score: processScore },
+    { label: 'Technology', score: techScore }
+  ].map(d => `
+    <div class="dim-card">
+      <span class="dim-label">${d.label}</span>
+      <div class="dim-score">${d.score}</div>
+      <div class="dim-max">out of 100</div>
+      <div class="dim-bar-track"><div class="dim-bar-fill" style="width:${d.score}%"></div></div>
+    </div>
+  `).join('');
+
+  fetchInsights(totalScore, peopleScore, processScore, techScore, name, company, industry, title, selfRanking);
+}
+
+function getTier(score) {
+  if (score >= 80) return {
+    label: '🏆 AI Vanguard',
+    headline: 'You\'re Ahead of the Curve — Now Accelerate',
+    subtext: '{name}, {company} has exceptional AI foundations. The opportunity now is bold scaling and competitive differentiation.'
+  };
+  if (score >= 60) return {
+    label: '⚡ AI Momentum',
+    headline: 'Strong Foundation — Ready to Scale',
+    subtext: '{name}, {company} has solid AI groundwork with clear opportunities to accelerate impact and ROI.'
+  };
+  if (score >= 40) return {
+    label: '🚀 AI Emerging',
+    headline: 'High Potential — Gaps to Close Strategically',
+    subtext: '{name}, {company} is building toward AI maturity. Targeted investments in 2–3 areas will unlock transformational value.'
+  };
+  return {
+    label: '🌱 AI Foundation',
+    headline: 'The Opportunity Ahead Is Significant',
+    subtext: '{name}, {company} is at the starting line — which means the competitive advantage available is still wide open to capture.'
+  };
+}
+
+function animateNumber(id, from, to, duration) {
+  const el = document.getElementById(id);
+  const start = performance.now();
+  const update = (time) => {
+    const elapsed = time - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(from + (to - from) * eased);
+    if (progress < 1) requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+
+async function fetchInsights(total, people, process, tech, name, company, industry, title, selfRanking) {
+  const weakest = ['People','Process','Technology'].reduce((a,b) =>
+    ({People: people, Process: process, Technology: tech}[a] < {People: people, Process: process, Technology: tech}[b] ? a : b)
+  );
+  const strongest = ['People','Process','Technology'].reduce((a,b) =>
+    ({People: people, Process: process, Technology: tech}[a] > {People: people, Process: process, Technology: tech}[b] ? a : b)
+  );
+
+  const rankingContext = selfRanking && selfRanking.length === 3
+    ? `The executive self-identified their transformation priorities in this order: 1st: ${selfRanking[0]}, 2nd: ${selfRanking[1]}, 3rd: ${selfRanking[2]}.`
+    : '';
+
+  const alignmentNote = selfRanking && selfRanking.length === 3
+    ? (selfRanking[0] === weakest
+        ? `Notably, their self-identified #1 priority (${selfRanking[0]}) ALIGNS with their lowest-scoring dimension — a sign of strong self-awareness.`
+        : `Interestingly, they ranked ${selfRanking[0]} as their top priority, yet their scores show ${weakest} is actually their weakest dimension — a potential blind spot worth surfacing.`)
+    : '';
+
+  const prompt = `You are a senior AI transformation strategist at Parinamas, a leading AI consulting firm. 
+
+A ${title || 'senior executive'} named ${name} from ${company} (${industry} industry) just completed the Parinamas AI Readiness Assessment with the following scores:
+- Overall Score: ${total}/100
+- People Dimension: ${people}/100
+- Process Dimension: ${process}/100  
+- Technology Dimension: ${tech}/100
+
+Strongest dimension: ${strongest}
+Weakest dimension: ${weakest}
+${rankingContext}
+${alignmentNote}
+
+Write a personalized 4-paragraph strategic assessment (no headers, flowing prose). Include:
+1. Open with a sharp, insightful observation about their specific score profile — what it signals about where they are in the AI transformation journey. Be direct, intelligent, and executive-grade.
+2. Call out their strongest dimension and what they should do to leverage it as a launchpad.
+3. Address their weakest dimension with a concrete strategic recommendation — specific, actionable, not generic. If there's an interesting alignment or misalignment between their self-ranking and their actual scores, weave that insight in naturally without being condescending.
+4. Close with a compelling statement about the competitive opportunity available to organizations at their maturity level in ${industry}, and why now is the right moment to act.
+
+Tone: Peer-level executive, intelligent, optimistic but grounded. No fluff. No bullet points. No headers. Think McKinsey meets Silicon Valley. Keep it under 290 words.`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.find(b => b.type === 'text')?.text || 'Your personalized insights are being prepared. Please reach out to us directly at parinamas.com.';
+    document.getElementById('insights-content').innerHTML = `<div class="insights-text">${text}</div>`;
+  } catch (e) {
+    document.getElementById('insights-content').innerHTML = `<div class="insights-text">Your AI readiness profile reveals meaningful opportunities across all three transformation dimensions. We recommend scheduling a focused strategy session to translate these insights into a concrete roadmap for your organization.</div>`;
+  }
+}
+</script>
+</body>
+</html>
