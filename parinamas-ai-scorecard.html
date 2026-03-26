@@ -1212,11 +1212,13 @@ function prevQuestion() {
 
 function showResults() {
   const name = document.getElementById('field-name').value || 'Executive';
+  const lastName = document.getElementById('field-lastname').value || '';
+  const email = document.getElementById('field-email').value || '';
   const company = document.getElementById('field-company').value || 'your organization';
   const industry = document.getElementById('field-industry').value || 'your industry';
   const title = document.getElementById('field-title').value || '';
 
-  userData = { name, company, industry, title };
+  userData = { name, lastName, email, company, industry, title };
 
   // Compute scores — skip the rank question (type: 'rank')
   const dims = { People: [], Process: [], Technology: [] };
@@ -1237,6 +1239,9 @@ function showResults() {
   const totalScore = Math.round((peopleScore + processScore + techScore) / 3);
 
   showScreen('screen-results');
+
+  // Submit to HubSpot
+  submitToHubSpot(name, lastName, email, company, title, industry, totalScore, peopleScore, processScore, techScore, getTier(totalScore).label);
 
   // Animate score ring
   const circumference = 477.5;
@@ -1361,6 +1366,38 @@ Tone: Peer-level executive, intelligent, optimistic but grounded. No fluff. No b
     document.getElementById('insights-content').innerHTML = `<div class="insights-text">Your AI readiness profile reveals meaningful opportunities across all three transformation dimensions. We recommend scheduling a focused strategy session to translate these insights into a concrete roadmap for your organization.</div>`;
   }
 }
+async function submitToHubSpot(firstName, lastName, email, company, jobTitle, industry, totalScore, peopleScore, processScore, techScore, tierLabel) {
+  if (!email) return; // Don't submit without email
+  try {
+    const payload = {
+      fields: [
+        { objectTypeId: '0-1', name: 'firstname', value: firstName },
+        { objectTypeId: '0-1', name: 'lastname', value: lastName },
+        { objectTypeId: '0-1', name: 'email', value: email },
+        { objectTypeId: '0-1', name: 'company', value: company },
+        { objectTypeId: '0-1', name: 'jobtitle', value: jobTitle },
+        { objectTypeId: '0-1', name: 'industry', value: industry },
+        { objectTypeId: '0-1', name: 'ai_readiness_score', value: String(totalScore) },
+        { objectTypeId: '0-1', name: 'ai_people_score', value: String(peopleScore) },
+        { objectTypeId: '0-1', name: 'ai_process_score', value: String(processScore) },
+        { objectTypeId: '0-1', name: 'ai_technology_score', value: String(techScore) },
+        { objectTypeId: '0-1', name: 'ai_readiness_tier', value: tierLabel }
+      ],
+      context: {
+        pageUri: 'https://parinamas.com/scorecard',
+        pageName: 'AI Readiness Assessment'
+      }
+    };
+    await fetch('https://api.hsforms.com/submissions/v3/integration/submit/48395953/a21eaddb-1dbc-4676-aa89-0966c83c23c9', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch (e) {
+    // Silent fail — don't break the user experience
+  }
+}
+
 </script>
 </body>
 </html>
